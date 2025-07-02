@@ -34,19 +34,18 @@ class NoteController extends GetxController {
           .where('userId', isEqualTo: userId)
           .orderBy('timestamp', descending: true)
           .snapshots()
-          .map(
-            (snapshot) =>
-                snapshot.docs
-                    .map(
-                      (doc) => NoteModel.fromMap(
-                        doc.data() as Map<String, dynamic>,
-                        doc.id,
-                      ),
-                    )
-                    .toList(),
-          ),
+          .map((snapshot) {
+            isLoading.value = false;
+            return snapshot.docs
+                .map(
+                  (doc) => NoteModel.fromMap(
+                    doc.data() as Map<String, dynamic>,
+                    doc.id,
+                  ),
+                )
+                .toList();
+          }),
     );
-    isLoading.value = false;
   }
 
   Future<void> addNote(String title, String message) async {

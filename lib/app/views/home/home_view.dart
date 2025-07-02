@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../controllers/note_controller.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/note_model.dart';
+import '../../utils/app_colors.dart';
+import '../../utils/app_fonts.dart';
 
 // Suggested color palette:
 // Primary: #6C63FF (Indigo Accent)
@@ -25,70 +28,139 @@ class HomeView extends StatelessWidget {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (context) => Dialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
             ),
-            title: Text(
-              'Add Note',
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
-            ),
-            content: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: titleController,
-                    decoration: const InputDecoration(labelText: 'Title'),
-                    style: GoogleFonts.montserrat(),
-                    validator:
-                        (value) =>
-                            value == null || value.isEmpty
-                                ? 'Title required'
-                                : null,
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: messageController,
-                    decoration: const InputDecoration(labelText: 'Message'),
-                    style: GoogleFonts.montserrat(),
-                    validator:
-                        (value) =>
-                            value == null || value.isEmpty
-                                ? 'Message required'
-                                : null,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel', style: GoogleFonts.montserrat()),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6C63FF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+            backgroundColor:
+                Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.darkCard
+                    : AppColors.card,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.note_add,
+                          color: AppColors.primary,
+                          size: 28,
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Add Note',
+                          style: AppFonts.bold(
+                            fontSize: 22,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkBackground
+                                : AppColors.background,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      style: AppFonts.regular(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkText
+                                : AppColors.text,
+                      ),
+                      validator:
+                          (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Title required'
+                                  : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: messageController,
+                      decoration: InputDecoration(
+                        labelText: 'Message',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkBackground
+                                : AppColors.background,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      style: AppFonts.regular(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkText
+                                : AppColors.text,
+                      ),
+                      validator:
+                          (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Message required'
+                                  : null,
+                    ),
+                    const SizedBox(height: 28),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(
+                            'Cancel',
+                            style: AppFonts.regular(color: AppColors.subtitle),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              await noteController.addNote(
+                                titleController.text.trim(),
+                                messageController.text.trim(),
+                              );
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          label: Text(
+                            'Add',
+                            style: AppFonts.bold(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    await noteController.addNote(
-                      titleController.text.trim(),
-                      messageController.text.trim(),
-                    );
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Text(
-                  'Add',
-                  style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
-                ),
               ),
-            ],
+            ),
           ),
     );
   }
@@ -100,74 +172,139 @@ class HomeView extends StatelessWidget {
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
+          (context) => Dialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(24),
             ),
-            title: Text(
-              'Edit Note',
-              style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
-            ),
-            content: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: titleController,
-                    decoration: const InputDecoration(labelText: 'Title'),
-                    style: GoogleFonts.montserrat(),
-                    validator:
-                        (value) =>
-                            value == null || value.isEmpty
-                                ? 'Title required'
-                                : null,
-                  ),
-                  const SizedBox(height: 12),
-                  TextFormField(
-                    controller: messageController,
-                    decoration: const InputDecoration(labelText: 'Message'),
-                    style: GoogleFonts.montserrat(),
-                    validator:
-                        (value) =>
-                            value == null || value.isEmpty
-                                ? 'Message required'
-                                : null,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel', style: GoogleFonts.montserrat()),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6C63FF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+            backgroundColor:
+                Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.darkCard
+                    : AppColors.card,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.edit, color: AppColors.primary, size: 28),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Edit Note',
+                          style: AppFonts.bold(
+                            fontSize: 22,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        labelText: 'Title',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkBackground
+                                : AppColors.background,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      style: AppFonts.regular(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkText
+                                : AppColors.text,
+                      ),
+                      validator:
+                          (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Title required'
+                                  : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: messageController,
+                      decoration: InputDecoration(
+                        labelText: 'Message',
+                        filled: true,
+                        fillColor:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkBackground
+                                : AppColors.background,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      style: AppFonts.regular(
+                        color:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? AppColors.darkText
+                                : AppColors.text,
+                      ),
+                      validator:
+                          (value) =>
+                              value == null || value.isEmpty
+                                  ? 'Message required'
+                                  : null,
+                    ),
+                    const SizedBox(height: 28),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(
+                            'Cancel',
+                            style: AppFonts.regular(color: AppColors.subtitle),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              final updatedNote = NoteModel(
+                                id: note.id,
+                                title: titleController.text.trim(),
+                                message: messageController.text.trim(),
+                                userId: note.userId,
+                                timestamp: note.timestamp,
+                              );
+                              await noteController.updateNote(updatedNote);
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.save,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          label: Text(
+                            'Save',
+                            style: AppFonts.bold(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final updatedNote = NoteModel(
-                      id: note.id,
-                      title: titleController.text.trim(),
-                      message: messageController.text.trim(),
-                      userId: note.userId,
-                      timestamp: note.timestamp,
-                    );
-                    await noteController.updateNote(updatedNote);
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Text(
-                  'Save',
-                  style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
-                ),
               ),
-            ],
+            ),
           ),
     );
   }
@@ -231,14 +368,55 @@ class HomeView extends StatelessWidget {
           ),
           Obx(() {
             if (noteController.isLoading.value) {
-              return const SliverFillRemaining(
-                child: Center(child: CircularProgressIndicator()),
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Card(
+                        elevation: 4,
+                        color: isDark ? AppColors.darkCard : AppColors.card,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          title: Container(
+                            height: 18,
+                            width: 120,
+                            color: Colors.white,
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Container(
+                              height: 14,
+                              width: 200,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  childCount: 6,
+                ),
               );
             }
             if (noteController.error.value != null) {
               return SliverFillRemaining(
                 child: Center(
-                  child: Text('Error: \\${noteController.error.value}'),
+                  child: Text(
+                    'Error: \\${noteController.error.value}',
+                    style: AppFonts.regular(),
+                  ),
                 ),
               );
             }
@@ -247,10 +425,7 @@ class HomeView extends StatelessWidget {
                 child: Center(
                   child: Text(
                     'No notes yet.',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 18,
-                      color: Colors.grey,
-                    ),
+                    style: AppFonts.regular(fontSize: 18, color: Colors.grey),
                   ),
                 ),
               );
@@ -265,7 +440,7 @@ class HomeView extends StatelessWidget {
                   ),
                   child: Card(
                     elevation: 4,
-                    color: isDark ? const Color(0xFF1E1E2C) : Colors.white,
+                    color: isDark ? AppColors.darkCard : AppColors.card,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -276,8 +451,8 @@ class HomeView extends StatelessWidget {
                       ),
                       title: Text(
                         note.title,
-                        style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.bold,
+                        style: AppFonts.bold(
+                          color: isDark ? AppColors.darkText : AppColors.text,
                           fontSize: 18,
                         ),
                       ),
@@ -285,7 +460,10 @@ class HomeView extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                           note.message,
-                          style: GoogleFonts.montserrat(fontSize: 16),
+                          style: AppFonts.regular(
+                            color: isDark ? AppColors.darkText : AppColors.text,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       trailing: Row(
@@ -303,9 +481,118 @@ class HomeView extends StatelessWidget {
                           IconButton(
                             icon: Icon(
                               Icons.delete,
-                              color: isDark ? Colors.redAccent : Colors.red,
+                              color:
+                                  isDark
+                                      ? AppColors.darkError
+                                      : AppColors.error,
                             ),
-                            onPressed: () => noteController.deleteNote(note.id),
+                            onPressed: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder:
+                                    (context) => Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24),
+                                      ),
+                                      backgroundColor:
+                                          isDark
+                                              ? AppColors.darkCard
+                                              : AppColors.card,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 24,
+                                          vertical: 28,
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.warning_amber_rounded,
+                                                  color: AppColors.error,
+                                                  size: 28,
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                  'Delete Note',
+                                                  style: AppFonts.bold(
+                                                    fontSize: 22,
+                                                    color: AppColors.error,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 20),
+                                            Text(
+                                              'Are you sure you want to delete this note?',
+                                              style: AppFonts.regular(
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 28),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                TextButton(
+                                                  onPressed:
+                                                      () => Navigator.of(
+                                                        context,
+                                                      ).pop(false),
+                                                  child: Text(
+                                                    'Cancel',
+                                                    style: AppFonts.regular(
+                                                      color: AppColors.subtitle,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                ElevatedButton.icon(
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        AppColors.error,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                    ),
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 12,
+                                                        ),
+                                                  ),
+                                                  onPressed:
+                                                      () => Navigator.of(
+                                                        context,
+                                                      ).pop(true),
+                                                  icon: const Icon(
+                                                    Icons.delete,
+                                                    color: Colors.white,
+                                                    size: 20,
+                                                  ),
+                                                  label: Text(
+                                                    'Delete',
+                                                    style: AppFonts.bold(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                              );
+                              if (confirm == true) {
+                                await noteController.deleteNote(note.id);
+                              }
+                            },
                           ),
                         ],
                       ),
