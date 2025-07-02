@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1029488636413",
+    "firebase_url": "https://flutter-dev-test-74c7a-default-rtdb.firebaseio.com",
+    "project_id": "flutter-dev-test-74c7a",
+    "storage_bucket": "flutter-dev-test-74c7a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1029488636413:android:6bc865eb107af632a3e994",
+        "android_client_info": {
+          "package_name": "com.example.note_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBogKS1dyZM2YgUxPImWIQF5-RnuICWU78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
