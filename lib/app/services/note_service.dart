@@ -24,7 +24,12 @@ class NoteService {
   }
 
   Future<void> addNote(NoteModel note) async {
-    await notesCollection.add(note.toMap());
+    await notesCollection.add({
+      'title': note.title,
+      'message': note.message,
+      'userId': note.userId,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 
   Future<void> updateNote(NoteModel note) async {

@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/note_controller.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/note_model.dart';
 
+// Suggested color palette:
+// Primary: #6C63FF (Indigo Accent)
+// Secondary: #F8F8FF (Ghost White)
+// Accent: #FF6584 (Pinkish Red)
+// Card: #FFFFFF (Light), #1E1E2C (Dark)
+// Font: GoogleFonts.montserrat()
+
 class HomeView extends StatelessWidget {
   HomeView({super.key});
-  final NoteController noteController = Get.put(NoteController());
+  final NoteController noteController = Get.find<NoteController>();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController messageController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -18,7 +26,13 @@ class HomeView extends StatelessWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Add Note'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              'Add Note',
+              style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+            ),
             content: Form(
               key: _formKey,
               child: Column(
@@ -27,15 +41,18 @@ class HomeView extends StatelessWidget {
                   TextFormField(
                     controller: titleController,
                     decoration: const InputDecoration(labelText: 'Title'),
+                    style: GoogleFonts.montserrat(),
                     validator:
                         (value) =>
                             value == null || value.isEmpty
                                 ? 'Title required'
                                 : null,
                   ),
+                  const SizedBox(height: 12),
                   TextFormField(
                     controller: messageController,
                     decoration: const InputDecoration(labelText: 'Message'),
+                    style: GoogleFonts.montserrat(),
                     validator:
                         (value) =>
                             value == null || value.isEmpty
@@ -48,9 +65,15 @@ class HomeView extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text('Cancel', style: GoogleFonts.montserrat()),
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF6C63FF),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     await noteController.addNote(
@@ -60,86 +83,15 @@ class HomeView extends StatelessWidget {
                     Navigator.of(context).pop();
                   }
                 },
-                child: const Text('Add'),
+                child: Text(
+                  'Add',
+                  style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Notes'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => AuthController.to.signOut(),
-            tooltip: 'Logout',
-          ),
-        ],
-      ),
-      body: Obx(() {
-        if (noteController.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (noteController.error.value != null) {
-          return Center(child: Text('Error: \\${noteController.error.value}'));
-        }
-        final notes = noteController.notes;
-        final isTablet = MediaQuery.of(context).size.width >= 600;
-        if (isTablet) {
-          // Two-column layout for tablet
-          return Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: _NotesList(notes: notes, noteController: noteController),
-              ),
-              const VerticalDivider(width: 1),
-              Expanded(
-                flex: 3,
-                child: Center(
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Note'),
-                    onPressed: () => _showAddNoteDialog(context),
-                  ),
-                ),
-              ),
-            ],
-          );
-        } else {
-          // Single column for mobile
-          return Column(
-            children: [
-              Expanded(
-                child: _NotesList(notes: notes, noteController: noteController),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add Note'),
-                    onPressed: () => _showAddNoteDialog(context),
-                  ),
-                ),
-              ),
-            ],
-          );
-        }
-      }),
-    );
-  }
-}
-
-class _NotesList extends StatelessWidget {
-  final List<NoteModel> notes;
-  final NoteController noteController;
-  const _NotesList({required this.notes, required this.noteController});
 
   void _showEditNoteDialog(BuildContext context, NoteModel note) {
     final titleController = TextEditingController(text: note.title);
@@ -149,7 +101,13 @@ class _NotesList extends StatelessWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Edit Note'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              'Edit Note',
+              style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+            ),
             content: Form(
               key: _formKey,
               child: Column(
@@ -158,15 +116,18 @@ class _NotesList extends StatelessWidget {
                   TextFormField(
                     controller: titleController,
                     decoration: const InputDecoration(labelText: 'Title'),
+                    style: GoogleFonts.montserrat(),
                     validator:
                         (value) =>
                             value == null || value.isEmpty
                                 ? 'Title required'
                                 : null,
                   ),
+                  const SizedBox(height: 12),
                   TextFormField(
                     controller: messageController,
                     decoration: const InputDecoration(labelText: 'Message'),
+                    style: GoogleFonts.montserrat(),
                     validator:
                         (value) =>
                             value == null || value.isEmpty
@@ -179,9 +140,15 @@ class _NotesList extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: Text('Cancel', style: GoogleFonts.montserrat()),
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF6C63FF),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     final updatedNote = NoteModel(
@@ -195,7 +162,10 @@ class _NotesList extends StatelessWidget {
                     Navigator.of(context).pop();
                   }
                 },
-                child: const Text('Save'),
+                child: Text(
+                  'Save',
+                  style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
@@ -204,34 +174,151 @@ class _NotesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (notes.isEmpty) {
-      return const Center(child: Text('No notes yet.'));
-    }
-    return ListView.separated(
-      itemCount: notes.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
-      itemBuilder: (context, index) {
-        final note = notes[index];
-        return ListTile(
-          title: Text(note.title),
-          subtitle: Text(note.message),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  _showEditNoteDialog(context, note);
-                },
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            floating: true,
+            snap: true,
+            backgroundColor:
+                isDark ? const Color(0xFF232946) : const Color(0xFF6C63FF),
+            title: Text(
+              'My Notes',
+              style: GoogleFonts.montserrat(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
+            ),
+            actions: [
               IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => noteController.deleteNote(note.id),
+                icon: const Icon(Icons.logout, color: Colors.white),
+                onPressed: () => AuthController.to.signOut(),
+                tooltip: 'Logout',
               ),
             ],
+            elevation: 4,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+            ),
           ),
-        );
-      },
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.add),
+                  label: Text(
+                    'Add Note',
+                    style: GoogleFonts.montserrat(fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        isDark
+                            ? const Color(0xFFFF6584)
+                            : const Color(0xFF6C63FF),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () => _showAddNoteDialog(context),
+                ),
+              ),
+            ),
+          ),
+          Obx(() {
+            if (noteController.isLoading.value) {
+              return const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            if (noteController.error.value != null) {
+              return SliverFillRemaining(
+                child: Center(
+                  child: Text('Error: \\${noteController.error.value}'),
+                ),
+              );
+            }
+            if (noteController.notes.isEmpty) {
+              return SliverFillRemaining(
+                child: Center(
+                  child: Text(
+                    'No notes yet.',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              );
+            }
+            return SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final note = noteController.notes[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Card(
+                    elevation: 4,
+                    color: isDark ? const Color(0xFF1E1E2C) : Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      title: Text(
+                        note.title,
+                        style: GoogleFonts.montserrat(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          note.message,
+                          style: GoogleFonts.montserrat(fontSize: 16),
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                              color: isDark ? Colors.amber : Colors.deepPurple,
+                            ),
+                            onPressed: () {
+                              _showEditNoteDialog(context, note);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: isDark ? Colors.redAccent : Colors.red,
+                            ),
+                            onPressed: () => noteController.deleteNote(note.id),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }, childCount: noteController.notes.length),
+            );
+          }),
+        ],
+      ),
+      backgroundColor:
+          isDark ? const Color(0xFF232946) : const Color(0xFFF8F8FF),
     );
   }
 }

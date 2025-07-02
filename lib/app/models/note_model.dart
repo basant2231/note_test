@@ -21,7 +21,7 @@ class NoteModel {
       title: data['title'] ?? '',
       message: data['message'] ?? '',
       userId: data['userId'] ?? '',
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
+      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
