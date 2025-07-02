@@ -6,6 +6,9 @@ import 'signup_view.dart';
 import 'package:flutter/gestures.dart';
 import '../../utils/app_colors.dart';
 import '../../utils/app_fonts.dart';
+import '../../widgets/app_text_form_field.dart';
+import '../../widgets/app_button.dart';
+import '../../utils/app_validators.dart';
 
 class LoginView extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -44,66 +47,28 @@ class LoginView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    TextFormField(
+                    AppTextFormField(
                       controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: const Icon(Icons.email),
-                        filled: true,
-                        fillColor:
-                            isDark
-                                ? AppColors.darkBackground
-                                : AppColors.background,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      style: AppFonts.regular(
-                        color: isDark ? AppColors.darkText : AppColors.text,
-                      ),
-                      validator:
-                          (value) =>
-                              value != null && value.isEmail
-                                  ? null
-                                  : 'Enter a valid email',
+                      label: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                      prefixIcon: const Icon(Icons.email),
+                      validator: Validators.email,
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
+                    AppTextFormField(
                       controller: passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: const Icon(Icons.lock),
-                        filled: true,
-                        fillColor:
-                            isDark
-                                ? AppColors.darkBackground
-                                : AppColors.background,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
+                      label: 'Password',
                       obscureText: true,
-                      style: AppFonts.regular(
-                        color: isDark ? AppColors.darkText : AppColors.text,
-                      ),
-                      validator:
-                          (value) =>
-                              value != null && value.length >= 6
-                                  ? null
-                                  : 'Password too short',
+                      prefixIcon: const Icon(Icons.lock),
+                      validator: Validators.password,
                     ),
                     const SizedBox(height: 24),
                     Obx(
                       () => SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                        child: AppButton(
+                          label: 'Login',
+                          loading: isLoading.value,
                           onPressed:
                               isLoading.value
                                   ? null
@@ -117,23 +82,7 @@ class LoginView extends StatelessWidget {
                                       isLoading.value = false;
                                     }
                                   },
-                          child:
-                              isLoading.value
-                                  ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                  : Text(
-                                    'Login',
-                                    style: AppFonts.bold(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                  ),
+                          icon: Icons.login,
                         ),
                       ),
                     ),
