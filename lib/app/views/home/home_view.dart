@@ -240,6 +240,83 @@ class HomeView extends StatelessWidget {
     );
   }
 
+  Future<bool?> _showLogoutDialog(BuildContext context) async {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return showDialog<bool>(
+      context: context,
+      builder:
+          (context) => Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            backgroundColor: isDark ? AppColors.darkCard : AppColors.card,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.logout, color: AppColors.primary, size: 28),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Logout',
+                        style: AppFonts.bold(
+                          fontSize: 22,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Are you sure you want to log out?',
+                    style: AppFonts.regular(fontSize: 16),
+                  ),
+                  const SizedBox(height: 28),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text(
+                          'Cancel',
+                          style: AppFonts.regular(color: AppColors.subtitle),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                        ),
+                        onPressed: () => Navigator.of(context).pop(true),
+                        icon: const Icon(
+                          Icons.logout,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        label: Text(
+                          'Logout',
+                          style: AppFonts.bold(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -264,7 +341,12 @@ class HomeView extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.logout, color: Colors.white),
-                    onPressed: () => AuthController.to.signOut(),
+                    onPressed: () async {
+                      final confirm = await _showLogoutDialog(context);
+                      if (confirm == true) {
+                        AuthController.to.signOut();
+                      }
+                    },
                     tooltip: 'Logout',
                   ),
                 ],
@@ -278,77 +360,45 @@ class HomeView extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: isTablet ? constraints.maxWidth * 0.15 : 16,
+                    horizontal: isTablet ? 24 : 16,
                     vertical: 12,
                   ),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.add),
-                      label: Text(
-                        'Add Note',
-                        style: GoogleFonts.montserrat(
-                          fontWeight: FontWeight.bold,
-                        ),
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: Text(
+                      'Add Note',
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.bold,
                       ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            isDark
-                                ? const Color(0xFFFF6584)
-                                : const Color(0xFF6C63FF),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () => _showAddNoteDialog(context),
                     ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          isDark
+                              ? const Color(0xFFFF6584)
+                              : const Color(0xFF6C63FF),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      minimumSize: const Size(double.infinity, 48),
+                    ),
+                    onPressed: () => _showAddNoteDialog(context),
                   ),
                 ),
               ),
               Obx(() {
                 if (noteController.isLoading.value) {
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal:
-                              isTablet ? constraints.maxWidth * 0.15 : 16,
-                          vertical: 8,
-                        ),
-                        child: Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Card(
-                            elevation: 4,
-                            color: isDark ? AppColors.darkCard : AppColors.card,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 12,
-                              ),
-                              title: Container(
-                                height: 18,
-                                width: 120,
-                                color: Colors.white,
-                              ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Container(
-                                  height: 14,
-                                  width: 200,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                  return SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color:
+                            isDark
+                                ? const Color(0xFF6C63FF)
+                                : const Color(0xFF6C63FF),
+                        strokeWidth: 3,
                       ),
-                      childCount: 6,
                     ),
                   );
                 }
@@ -377,19 +427,17 @@ class HomeView extends StatelessWidget {
                 }
                 // Responsive notes list
                 if (isTablet) {
-                  // Two-column grid for tablets
+                  // Two or three-column grid for tablets, minimal horizontal padding
+                  int crossAxisCount = constraints.maxWidth > 1100 ? 3 : 2;
                   return SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: constraints.maxWidth * 0.10,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                            childAspectRatio: 1.6,
-                          ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 1.6,
+                      ),
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final note = noteController.notes[index];
                         return NoteCard(

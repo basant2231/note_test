@@ -14,12 +14,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Get.put(AuthController());
   Get.put(NoteController());
-  runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (BuildContext context) => const MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
