@@ -9,6 +9,7 @@ import '../../widgets/app_text_form_field.dart';
 import '../../widgets/app_button.dart';
 import '../../utils/app_validators.dart';
 
+/// SignupView provides the signup form and handles user registration.
 class SignupView extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -79,6 +80,7 @@ class SignupView extends StatelessWidget {
                                         passwordController.text.trim(),
                                       );
                                       isLoading.value = false;
+                                      Get.offAllNamed('/home');
                                     }
                                   },
                           icon: Icons.person_add,
@@ -87,7 +89,7 @@ class SignupView extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     TextButton(
-                      onPressed: () => Get.back(),
+                      onPressed: () => Get.toNamed('/login'),
                       child: RichText(
                         text: TextSpan(
                           style: AppFonts.regular(color: AppColors.text),
@@ -105,7 +107,7 @@ class SignupView extends StatelessWidget {
                               ),
                               recognizer:
                                   TapGestureRecognizer()
-                                    ..onTap = () => Get.back(),
+                                    ..onTap = () => Get.toNamed('/login'),
                             ),
                           ],
                         ),

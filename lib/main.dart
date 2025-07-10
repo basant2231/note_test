@@ -4,19 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:note_test/firebase_options.dart';
-import 'app/controllers/auth_controller.dart';
-import 'app/controllers/note_controller.dart';
-import 'app/views/auth/login_view.dart';
-import 'app/views/home/home_view.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  Get.put(AuthController());
-  Get.put(NoteController());
-  runApp(MyApp());
-}
+import 'app/routes/routes.dart';
 
+/// MyApp is the root widget of the Note App, using GetX for state management and routing.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -29,14 +20,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Obx(() {
-        final user = AuthController.to.user;
-        if (user == null) {
-          return LoginView();
-        } else {
-          return HomeView();
-        }
-      }),
+      initialRoute: AppRoutes.splash,
+      getPages: AppRoutes.routes,
     );
   }
+}
+
+/// Entry point of the Note App. Initializes Firebase and runs the app.
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const MyApp());
 }

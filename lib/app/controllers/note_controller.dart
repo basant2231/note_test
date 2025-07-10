@@ -5,10 +5,11 @@ import '../services/note_service.dart';
 import 'auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// NoteController manages notes, loading, and error state for the app.
 class NoteController extends GetxController {
   final notes = <NoteModel>[].obs;
-  final isLoading = false.obs;
-  final error = RxnString();
+  final RxBool isLoading = false.obs;
+  final RxnString error = RxnString();
 
   @override
   void onInit() {

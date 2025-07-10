@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_model.dart';
 
+/// AuthController manages authentication state and logic for the app.
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
 
@@ -10,6 +11,7 @@ class AuthController extends GetxController {
   Rxn<UserModel> get userRx => _user;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final RxBool isLoading = false.obs;
 
   @override
   void onInit() {

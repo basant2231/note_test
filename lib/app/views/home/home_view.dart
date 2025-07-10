@@ -13,13 +13,7 @@ import '../../utils/app_validators.dart';
 import '../../widgets/note_card.dart';
 import '../../widgets/delete_note_dialog.dart';
 
-// Suggested color palette:
-// Primary: #6C63FF (Indigo Accent)
-// Secondary: #F8F8FF (Ghost White)
-// Accent: #FF6584 (Pinkish Red)
-// Card: #FFFFFF (Light), #1E1E2C (Dark)
-// Font: GoogleFonts.montserrat()
-
+/// HomeView displays the user's notes and allows note management.
 class HomeView extends StatelessWidget {
   HomeView({super.key});
   final NoteController noteController = Get.find<NoteController>();
@@ -345,6 +339,7 @@ class HomeView extends StatelessWidget {
                       final confirm = await _showLogoutDialog(context);
                       if (confirm == true) {
                         AuthController.to.signOut();
+                        Get.offAllNamed('/login');
                       }
                     },
                     tooltip: 'Logout',
@@ -406,7 +401,7 @@ class HomeView extends StatelessWidget {
                   return SliverFillRemaining(
                     child: Center(
                       child: Text(
-                        'Error: \\${noteController.error.value}',
+                        'Error: ${noteController.error.value}',
                         style: AppFonts.regular(),
                       ),
                     ),

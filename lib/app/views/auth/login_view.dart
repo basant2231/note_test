@@ -10,11 +10,11 @@ import '../../widgets/app_text_form_field.dart';
 import '../../widgets/app_button.dart';
 import '../../utils/app_validators.dart';
 
+/// LoginView provides the login form and handles user authentication.
 class LoginView extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final RxBool isLoading = false.obs;
 
   LoginView({super.key});
 
@@ -68,18 +68,19 @@ class LoginView extends StatelessWidget {
                         width: double.infinity,
                         child: AppButton(
                           label: 'Login',
-                          loading: isLoading.value,
+                          loading: AuthController.to.isLoading.value,
                           onPressed:
-                              isLoading.value
+                              AuthController.to.isLoading.value
                                   ? null
                                   : () async {
                                     if (_formKey.currentState!.validate()) {
-                                      isLoading.value = true;
+                                      AuthController.to.isLoading.value = true;
                                       await AuthController.to.signIn(
                                         emailController.text.trim(),
                                         passwordController.text.trim(),
                                       );
-                                      isLoading.value = false;
+                                      AuthController.to.isLoading.value = false;
+                                      Get.offAllNamed('/home');
                                     }
                                   },
                           icon: Icons.login,
@@ -88,7 +89,7 @@ class LoginView extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     TextButton(
-                      onPressed: () => Get.to(() => SignupView()),
+                      onPressed: () => Get.toNamed('/signup'),
                       child: RichText(
                         text: TextSpan(
                           style: AppFonts.regular(color: AppColors.text),
@@ -106,7 +107,7 @@ class LoginView extends StatelessWidget {
                               ),
                               recognizer:
                                   TapGestureRecognizer()
-                                    ..onTap = () => Get.to(() => SignupView()),
+                                    ..onTap = () => Get.toNamed('/signup'),
                             ),
                           ],
                         ),
