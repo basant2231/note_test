@@ -10,7 +10,7 @@ import '../../widgets/add_note_dialog.dart';
 import '../../widgets/edit_note_dialog.dart';
 import '../../widgets/dialogs/logout_dialog.dart';
 import '../../theme/app_colors.dart';
-import '../../theme/app_paddings.dart';
+
 
 /// HomeView displays the user's notes and allows note management.
 class HomeView extends StatelessWidget {
@@ -61,7 +61,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return LayoutBuilder(
       builder: (context, constraints) {
         final isTablet = constraints.maxWidth >= 700;
@@ -71,8 +70,7 @@ class HomeView extends StatelessWidget {
               SliverAppBar(
                 floating: true,
                 snap: true,
-                backgroundColor:
-                    isDark ? const Color(0xFF232946) : const Color(0xFF6C63FF),
+                backgroundColor: const Color(0xFF6C63FF),
                 title: Text(
                   'My Notes',
                   style: AppFonts.bold(color: Colors.white, fontSize: 22),
@@ -107,8 +105,7 @@ class HomeView extends StatelessWidget {
                     icon: const Icon(Icons.add),
                     label: Text('Add Note', style: AppFonts.bold(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          isDark ? AppColors.accent : AppColors.primary,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(

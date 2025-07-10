@@ -7,7 +7,6 @@ import '../../utils/app_fonts.dart';
 import '../../widgets/app_text_form_field.dart';
 import '../../widgets/app_button.dart';
 import '../../utils/app_validators.dart';
-import '../../theme/app_paddings.dart';
 
 /// SignupView provides the signup form and handles user registration.
 class SignupView extends StatelessWidget {

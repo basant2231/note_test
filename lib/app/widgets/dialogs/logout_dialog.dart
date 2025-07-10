@@ -3,17 +3,14 @@ import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../utils/app_fonts.dart';
 import '../../theme/app_colors.dart';
-import '../../theme/app_paddings.dart';
-
 class LogoutDialog extends StatelessWidget {
   LogoutDialog({super.key});
   final AuthController authController = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      backgroundColor: isDark ? AppColors.darkCard : AppColors.card,
+      backgroundColor: AppColors.card,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
         child: Column(

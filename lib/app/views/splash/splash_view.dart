@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../routes/routes.dart';
-import '../../theme/app_colors.dart';
-import '../../theme/app_paddings.dart';
 
 /// SplashView checks authentication state and navigates to the appropriate screen.
 class SplashView extends StatefulWidget {

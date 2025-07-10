@@ -21,9 +21,8 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.background,
+      backgroundColor: AppColors.background,
       body: Center(
         child: SingleChildScrollView(
           padding: AppPaddings.screen,
@@ -32,7 +31,7 @@ class LoginView extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
             ),
-            color: isDark ? AppColors.darkCard : AppColors.card,
+            color: AppColors.card,
             child: Padding(
               padding: AppPaddings.card,
               child: Form(
@@ -43,7 +42,7 @@ class LoginView extends StatelessWidget {
                     Text(
                       'Welcome Back!',
                       style: AppFonts.bold(
-                        color: isDark ? AppColors.darkText : AppColors.primary,
+                        color: AppColors.primary,
                         fontSize: 28,
                       ),
                     ),

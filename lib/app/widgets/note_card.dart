@@ -12,10 +12,9 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Card(
       elevation: 4,
-      color: isDark ? AppColors.darkCard : AppColors.card,
+      color: AppColors.card,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(
@@ -24,36 +23,24 @@ class NoteCard extends StatelessWidget {
         ),
         title: Text(
           note.title,
-          style: AppTextStyles.headline(
-            color: isDark ? AppColors.darkText : AppColors.text,
-            fontSize: 18,
-          ),
+          style: AppTextStyles.headline(color: AppColors.text, fontSize: 18),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: Text(
             note.message,
-            style: AppTextStyles.body(
-              color: isDark ? AppColors.darkText : AppColors.text,
-              fontSize: 16,
-            ),
+            style: AppTextStyles.body(color: AppColors.text, fontSize: 16),
           ),
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(
-                Icons.edit,
-                color: isDark ? AppColors.accent : AppColors.primary,
-              ),
+              icon: Icon(Icons.edit, color: AppColors.primary),
               onPressed: onEdit,
             ),
             IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: isDark ? AppColors.darkError : AppColors.error,
-              ),
+              icon: Icon(Icons.delete, color: AppColors.error),
               onPressed: onDelete,
             ),
           ],

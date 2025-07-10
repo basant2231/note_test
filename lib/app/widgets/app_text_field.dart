@@ -22,7 +22,6 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return TextFormField(
       controller: controller,
       validator: validator,
@@ -32,11 +31,11 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor: isDark ? AppColors.darkBackground : AppColors.background,
+        fillColor: AppColors.background,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
       style: AppTextStyles.body(
-        color: isDark ? AppColors.darkText : AppColors.text,
+        color: AppColors.text,
       ),
     );
   }
