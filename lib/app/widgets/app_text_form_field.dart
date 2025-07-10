@@ -17,7 +17,7 @@ class AppTextFormField extends StatelessWidget {
   final void Function(String)? onChanged;
 
   const AppTextFormField({
-    Key? key,
+    super.key,
     this.controller,
     this.label,
     this.hint,
@@ -30,7 +30,7 @@ class AppTextFormField extends StatelessWidget {
     this.minLines,
     this.enabled = true,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

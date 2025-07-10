@@ -45,7 +45,7 @@ class NoteCard extends StatelessWidget {
             IconButton(
               icon: Icon(
                 Icons.edit,
-                color: isDark ? Colors.amber : Colors.deepPurple,
+                color: isDark ? AppColors.accent : AppColors.primary,
               ),
               onPressed: onEdit,
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../widgets/app_text_form_field.dart';
@@ -59,7 +60,7 @@ Future<void> showEditNoteDialog({
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         await onSave(titleController.text.trim(), messageController.text.trim());
-                        Navigator.of(context).pop();
+                      Get.back();
                       }
                     },
                   ),

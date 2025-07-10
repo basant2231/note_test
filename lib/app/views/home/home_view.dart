@@ -1,313 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../controllers/note_controller.dart';
 import '../../controllers/auth_controller.dart';
 import '../../models/note_model.dart';
-import '../../utils/app_colors.dart';
 import '../../utils/app_fonts.dart';
-import '../../widgets/app_text_form_field.dart';
-import '../../widgets/app_button.dart';
-import '../../utils/app_validators.dart';
 import '../../widgets/note_card.dart';
 import '../../widgets/delete_note_dialog.dart';
+import '../../widgets/add_note_dialog.dart';
+import '../../widgets/edit_note_dialog.dart';
+import '../../widgets/dialogs/logout_dialog.dart';
+import '../../theme/app_colors.dart';
+import '../../theme/app_paddings.dart';
 
 /// HomeView displays the user's notes and allows note management.
 class HomeView extends StatelessWidget {
   HomeView({super.key});
   final NoteController noteController = Get.find<NoteController>();
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController messageController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
 
-  void _showAddNoteDialog(BuildContext context) {
-    titleController.clear();
-    messageController.clear();
-    showDialog(
+  final GlobalKey<FormState> _addFormKey = GlobalKey<FormState>();
+  final TextEditingController _addTitleController = TextEditingController();
+  final TextEditingController _addMessageController = TextEditingController();
+
+  final GlobalKey<FormState> _editFormKey = GlobalKey<FormState>();
+  final TextEditingController _editTitleController = TextEditingController();
+  final TextEditingController _editMessageController = TextEditingController();
+
+  Future<void> _showAddNoteDialog(BuildContext context) async {
+    await showAddNoteDialog(
       context: context,
-      builder:
-          (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            backgroundColor:
-                Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.darkCard
-                    : AppColors.card,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.note_add,
-                          color: AppColors.primary,
-                          size: 28,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Add Note',
-                          style: AppFonts.bold(
-                            fontSize: 22,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    AppTextFormField(
-                      controller: titleController,
-                      label: 'Title',
-                      validator:
-                          (value) => Validators.required(value, field: 'Title'),
-                    ),
-                    const SizedBox(height: 16),
-                    AppTextFormField(
-                      controller: messageController,
-                      label: 'Message',
-                      validator:
-                          (value) =>
-                              Validators.required(value, field: 'Message'),
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(
-                            'Cancel',
-                            style: AppFonts.regular(color: AppColors.subtitle),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              await noteController.addNote(
-                                titleController.text.trim(),
-                                messageController.text.trim(),
-                              );
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          label: Text(
-                            'Add',
-                            style: AppFonts.bold(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+      formKey: _addFormKey,
+      titleController: _addTitleController,
+      messageController: _addMessageController,
+      onAdd: (title, message) async {
+        await noteController.addNote(title, message);
+      },
     );
   }
 
-  void _showEditNoteDialog(BuildContext context, NoteModel note) {
-    final titleController = TextEditingController(text: note.title);
-    final messageController = TextEditingController(text: note.message);
-    final _formKey = GlobalKey<FormState>();
-    showDialog(
+  Future<void> _showEditNoteDialog(BuildContext context, NoteModel note) async {
+    _editTitleController.text = note.title;
+    _editMessageController.text = note.message;
+    await showEditNoteDialog(
       context: context,
-      builder:
-          (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            backgroundColor:
-                Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.darkCard
-                    : AppColors.card,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.edit, color: AppColors.primary, size: 28),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Edit Note',
-                          style: AppFonts.bold(
-                            fontSize: 22,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    AppTextFormField(
-                      controller: titleController,
-                      label: 'Title',
-                      validator:
-                          (value) => Validators.required(value, field: 'Title'),
-                    ),
-                    const SizedBox(height: 16),
-                    AppTextFormField(
-                      controller: messageController,
-                      label: 'Message',
-                      validator:
-                          (value) =>
-                              Validators.required(value, field: 'Message'),
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(
-                            'Cancel',
-                            style: AppFonts.regular(color: AppColors.subtitle),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              final updatedNote = NoteModel(
-                                id: note.id,
-                                title: titleController.text.trim(),
-                                message: messageController.text.trim(),
-                                userId: note.userId,
-                                timestamp: note.timestamp,
-                              );
-                              await noteController.updateNote(updatedNote);
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          icon: const Icon(
-                            Icons.save,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          label: Text(
-                            'Save',
-                            style: AppFonts.bold(color: Colors.white),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+      formKey: _editFormKey,
+      titleController: _editTitleController,
+      messageController: _editMessageController,
+      onSave: (title, message) async {
+        final updatedNote = note.copyWith(title: title, message: message);
+        await noteController.updateNote(updatedNote);
+      },
     );
   }
 
   Future<bool?> _showLogoutDialog(BuildContext context) async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return showDialog<bool>(
       context: context,
-      builder:
-          (context) => Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            backgroundColor: isDark ? AppColors.darkCard : AppColors.card,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.logout, color: AppColors.primary, size: 28),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Logout',
-                        style: AppFonts.bold(
-                          fontSize: 22,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Are you sure you want to log out?',
-                    style: AppFonts.regular(fontSize: 16),
-                  ),
-                  const SizedBox(height: 28),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: Text(
-                          'Cancel',
-                          style: AppFonts.regular(color: AppColors.subtitle),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
-                          ),
-                        ),
-                        onPressed: () => Navigator.of(context).pop(true),
-                        icon: const Icon(
-                          Icons.logout,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        label: Text(
-                          'Logout',
-                          style: AppFonts.bold(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+      builder: (context) => LogoutDialog(),
     );
   }
 
@@ -327,10 +75,7 @@ class HomeView extends StatelessWidget {
                     isDark ? const Color(0xFF232946) : const Color(0xFF6C63FF),
                 title: Text(
                   'My Notes',
-                  style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: AppFonts.bold(color: Colors.white, fontSize: 22),
                 ),
                 actions: [
                   IconButton(
@@ -360,17 +105,10 @@ class HomeView extends StatelessWidget {
                   ),
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.add),
-                    label: Text(
-                      'Add Note',
-                      style: GoogleFonts.montserrat(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    label: Text('Add Note', style: AppFonts.bold(fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          isDark
-                              ? const Color(0xFFFF6584)
-                              : const Color(0xFF6C63FF),
+                          isDark ? AppColors.accent : AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -388,10 +126,7 @@ class HomeView extends StatelessWidget {
                     hasScrollBody: false,
                     child: Center(
                       child: CircularProgressIndicator(
-                        color:
-                            isDark
-                                ? const Color(0xFF6C63FF)
-                                : const Color(0xFF6C63FF),
+                        color: AppColors.primary,
                         strokeWidth: 3,
                       ),
                     ),
@@ -422,7 +157,6 @@ class HomeView extends StatelessWidget {
                 }
                 // Responsive notes list
                 if (isTablet) {
-                  // Two or three-column grid for tablets, minimal horizontal padding
                   int crossAxisCount = constraints.maxWidth > 1100 ? 3 : 2;
                   return SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -451,7 +185,6 @@ class HomeView extends StatelessWidget {
                     ),
                   );
                 } else {
-                  // Single-column list for mobile
                   return SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       final note = noteController.notes[index];

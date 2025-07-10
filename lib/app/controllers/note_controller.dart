@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import '../models/note_model.dart';
 import '../models/user_model.dart';
-import '../services/note_service.dart';
 import 'auth_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -40,7 +39,7 @@ class NoteController extends GetxController {
             return snapshot.docs
                 .map(
                   (doc) => NoteModel.fromMap(
-                    doc.data() as Map<String, dynamic>,
+                    doc.data(),
                     doc.id,
                   ),
                 )

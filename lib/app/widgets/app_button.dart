@@ -13,7 +13,7 @@ class AppButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.label,
     this.onPressed,
     this.loading = false,
@@ -22,13 +22,13 @@ class AppButton extends StatelessWidget {
     this.textColor,
     this.borderRadius = 12,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final btnColor = color ?? AppColors.primary;
-    final txtColor = textColor ?? Colors.white;
+    final txtColor = textColor ?? AppColors.card;
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
         backgroundColor: btnColor,

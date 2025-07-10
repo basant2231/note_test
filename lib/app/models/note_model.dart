@@ -33,4 +33,20 @@ class NoteModel {
       'timestamp': timestamp,
     };
   }
+
+  NoteModel copyWith({
+    String? id,
+    String? title,
+    String? message,
+    String? userId,
+    DateTime? timestamp,
+  }) {
+    return NoteModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      message: message ?? this.message,
+      userId: userId ?? this.userId,
+      timestamp: timestamp ?? this.timestamp,
+    );
+  }
 }

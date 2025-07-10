@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/auth_controller.dart';
 import 'package:flutter/gestures.dart';
-import '../../utils/app_colors.dart';
+import '../../theme/app_colors.dart';
 import '../../utils/app_fonts.dart';
 import '../../widgets/app_text_form_field.dart';
 import '../../widgets/app_button.dart';
 import '../../utils/app_validators.dart';
+import '../../theme/app_paddings.dart';
 
 /// SignupView provides the signup form and handles user registration.
 class SignupView extends StatelessWidget {
@@ -15,6 +15,7 @@ class SignupView extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final RxBool isLoading = false.obs;
+  final AuthController authController = Get.find<AuthController>();
 
   SignupView({super.key});
 
@@ -75,7 +76,7 @@ class SignupView extends StatelessWidget {
                                   : () async {
                                     if (_formKey.currentState!.validate()) {
                                       isLoading.value = true;
-                                      await AuthController.to.signUp(
+                                      await authController.signUp(
                                         emailController.text.trim(),
                                         passwordController.text.trim(),
                                       );
@@ -94,15 +95,14 @@ class SignupView extends StatelessWidget {
                         text: TextSpan(
                           style: AppFonts.regular(color: AppColors.text),
                           children: [
-                            const TextSpan(
+                            TextSpan(
                               text: "Already have an account? ",
-                              style: TextStyle(color: Colors.black),
+                              style: AppFonts.regular(color: Colors.black),
                             ),
                             TextSpan(
                               text: 'Login',
-                              style: const TextStyle(
+                              style: AppFonts.bold(
                                 color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
                               ),
                               recognizer:

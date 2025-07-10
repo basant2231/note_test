@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+import '../theme/app_paddings.dart';
 
 Future<bool?> showDeleteNoteDialog({required BuildContext context}) async {
   return showDialog<bool>(
